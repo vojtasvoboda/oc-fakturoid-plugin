@@ -1,0 +1,6 @@
+plugin:
+    name: 'Fakturoid'
+    description: 'Fakturoid connector'
+    author: 'Vojta Svoboda'
+    icon: icon-cloud-upload
+    homepage: 'https://www.fakturoid.cz'

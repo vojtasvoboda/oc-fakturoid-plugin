@@ -1,0 +1,27 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    id:
+        label: ID
+    level:
+        label: Level
+        searchable: true
+    request_method:
+        label: Method
+        searchable: true
+    request_params:
+        label: Params
+        searchable: true
+    response_status_code:
+        label: Status
+        searchable: true
+    response_body:
+        label: Response
+        searchable: true
+    created_at:
+        label: Sent
+        type: datetime
+        sortable: true
+        format: d.m.Y H:i:s
