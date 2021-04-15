@@ -1,3 +1,5 @@
 1.0.0:
     - First version of Fakturoid
     - create_logs_table.php
+1.0.1:
+    - Force setting created_at timestamp at log table

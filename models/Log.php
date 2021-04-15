@@ -1,6 +1,7 @@
 <?php namespace VojtaSvoboda\Fakturoid\Models;
 
 use Model;
+use October\Rain\Argon\Argon;
 
 /**
  * Log Model
@@ -28,4 +29,12 @@ class Log extends Model
      * @var bool $timestamps If save timestamps.
      */
     public $timestamps = false;
+
+    /**
+     * Before create event handler.
+     */
+    public function beforeCreate()
+    {
+        $this->created_at = Argon::now();
+    }
 }

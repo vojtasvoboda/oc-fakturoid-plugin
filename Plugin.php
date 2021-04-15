@@ -24,10 +24,10 @@ class Plugin extends PluginBase
                 'url' => Backend::url('vojtasvoboda/fakturoid/logs'),
                 'icon' => 'icon-cloud-upload',
                 'permissions' => ['vojtasvoboda.fakturoid.logs'],
-                'order' => 500,
+                'order' => 600,
                 'sideMenu' => [
                     'logs' => [
-                        'label' => 'Fakturoid',
+                        'label' => 'Log',
                         'url' => Backend::url('vojtasvoboda/fakturoid/logs'),
                         'icon' => 'icon-cloud-upload',
                         'permissions' => ['vojtasvoboda.fakturoid.logs'],

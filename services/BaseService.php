@@ -40,10 +40,10 @@ class BaseService
         $this->log->create([
             'level' => 'error',
             'request_method' => $method,
-            'request_params' => json_encode($params),
+            'request_params' => json_encode($params, JSON_UNESCAPED_UNICODE),
             'response_status_code' => $response->getStatusCode(),
-            'response_headers' => json_encode($response->getHeaders()),
-            'response_body' => json_encode($response->getBody()),
+            'response_headers' => json_encode($response->getHeaders(), JSON_UNESCAPED_UNICODE),
+            'response_body' => json_encode($response->getBody(), JSON_UNESCAPED_UNICODE),
         ]);
     }
 
@@ -52,10 +52,10 @@ class BaseService
         $this->log->create([
             'level' => 'exception',
             'request_method' => $method,
-            'request_params' => json_encode($params),
+            'request_params' => json_encode($params, JSON_UNESCAPED_UNICODE),
             'response_status_code' => $e->getCode(),
             'response_headers' => null,
-            'response_body' => json_encode($e->getMessage()),
+            'response_body' => json_encode($e->getMessage(), JSON_UNESCAPED_UNICODE),
         ]);
     }
 }
