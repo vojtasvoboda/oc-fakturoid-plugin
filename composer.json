@@ -1,5 +1,5 @@
 {
-    "name": "vojtasvoboda/oc-fakturoid-plugin",
+    "name": "vojtasvoboda/fakturoid-plugin",
     "description": "Fakturoid connector for OctoberCMS",
     "type": "october-plugin",
     "keywords": ["fakturoid"],
