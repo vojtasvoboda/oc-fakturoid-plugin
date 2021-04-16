@@ -2,17 +2,21 @@
 #  Form Field Definitions
 # ===================================
 
-fields:
-    account_id:
-        label: ID účtu
-        required: true
-        comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci Oprávnění k účtům ve sloupci Účet'
-    account_email:
-        label: E-mail účtu
-        required: true
-        type: email
-        comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, nahoře pod názvem firmy'
-    api_key:
-        label: API klíč
-        required: true
-        comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API klíč'
+tabs:
+    fields:
+        account_id:
+            tab: Přístup k účtu
+            label: ID účtu
+            required: true
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci Oprávnění k účtům ve sloupci Účet'
+        account_email:
+            tab: Přístup k účtu
+            label: E-mail účtu
+            required: true
+            type: email
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, nahoře pod názvem firmy'
+        api_key:
+            tab: Přístup k účtu
+            label: API klíč
+            required: true
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API klíč'
