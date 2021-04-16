@@ -12,7 +12,7 @@ modelClass: VojtaSvoboda\Fakturoid\Models\Log
 title: Manage Logs
 
 # Link URL for each record
-recordUrl: vojtasvoboda/fakturoid/logs/update/:id
+# recordUrl: vojtasvoboda/fakturoid/logs/update/:id
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records
