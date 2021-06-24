@@ -44,7 +44,7 @@ class InvoiceService extends BaseService
      *
      * @param int $id
      * @param array|null $headers
-     * @return \stdClass|null
+     * @return string|null
      * @throws Exception
      * @api GET /api/v2/accounts/<slug>/invoices/<id>.json
      * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice-pdf/stazeni-faktury-v-pdf
