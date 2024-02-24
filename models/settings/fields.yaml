@@ -17,6 +17,6 @@ tabs:
             comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, nahoře pod názvem firmy'
         api_key:
             tab: Přístup k účtu
-            label: API klíč
+            label: API v2 klíč
             required: true
-            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API klíč'
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API v2 klíč'

@@ -3,3 +3,4 @@
     - create_logs_table.php
 1.0.1: Force setting created_at timestamp at log table
 1.0.2: Update plugin settings using tabs to better extending
+1.0.3: Remove composer.lock to use latest libraries
