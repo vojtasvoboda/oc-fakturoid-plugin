@@ -1,8 +1,20 @@
-# Fakturoid plugin for OctoberCMS
+# Fakturoid plugin 1.x for OctoberCMS
 
-Fakturoid plugin for OctoberCMS adds connector to Fakturoid API v2. No other plugin dependencies.
+Fakturoid plugin 1.x for OctoberCMS adds connector to Fakturoid API v2. No other plugin dependencies.
 
-Developed with OctoberCMS v1.1.4 (Laravel 6.0). Latest test with OctoberCMS v3.2.21 (Laravel 9.52.5).
+Developed with OctoberCMS v1.1.4 (Laravel 6.0). Latest test with OctoberCMS v3.6.8 (Laravel 9.52.16) and PHP 8.3.3.
+
+## Versions
+
+Plugin has versions 1.x and 2.x and both are compatible with October v1.x, v2.x and v3.x.
+But the version 2.x can be used only with PHP 8.1 and higher.
+
+You are watching README for version 1.x.
+
+| Plugin version | Fakturoid API | PHP       |
+|----------------|---------------|-----------|
+| `2.x`          | `v3`          | `>=8.1`   |
+| `1.x`          | `v2`          | `>=5.3.0` |
 
 ## Installation
 
