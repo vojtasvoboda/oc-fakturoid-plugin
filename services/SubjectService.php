@@ -1,121 +1,106 @@
 <?php namespace VojtaSvoboda\Fakturoid\Services;
 
-use Fakturoid\Exception;
+use stdClass;
+use Exception;
+use Fakturoid\Provider\SubjectsProvider;
 
 /**
  * Subjects management.
  *
- * @see https://fakturoid.docs.apiary.io/#reference/subjects/uprava-kontaktu
+ * @see https://www.fakturoid.cz/api/v3/subjects
  * @package VojtaSvoboda\Fakturoid\Services
  */
 class SubjectService extends BaseService
 {
+    public function getProvider(): SubjectsProvider
+    {
+        return $this->client->getSubjectsProvider();
+    }
+
     /**
-     * Get subjects. Returns 200 or 400 for bad params.
+     * Get subjects. Returns array with subjects or Exception for bad params.
      *
      * Available parameters: since, updated_since, page, custom_id.
      *
-     * @param array|null $params
-     * @return array|null
      * @throws Exception
-     * @api GET /api/v2/accounts/<slug>/subjects.json
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subjects-collection/seznam-vsech-kontaktu
+     * @api GET /api/v3/accounts/{slug}/subjects.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#subjects-index
      */
-    public function getSubjects($params = null)
+    public function getSubjects(array $params = []): array
     {
         try {
-            $response = $this->client->getSubjects($params);
+            $response = $this->getProvider()->list($params);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $params, $response);
-        }
-
         return $response->getBody();
     }
 
     /**
-     * Fulltext subjects search. Returns only 200.
+     * Fulltext subjects search. Returns array with subjects.
      *
-     * @param string|null $query
-     * @param array|null $headers
-     * @return array|null
+     * Following fields are being searched: name, full_name, email, email_copy, registration_no, vat_no and private_note.
+     *
      * @throws Exception
-     * @api GET /api/v2/accounts/<slug>/subjects/search.json?query=
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subjects-collection-fulltext-search/fulltextove-vyhledavani-v-kontaktech
+     * @api GET /api/v3/accounts/{slug}/subjects/search.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#subjects-search
      */
-    public function searchSubjects($query = null, $headers = null)
+    public function searchSubjects(string $query = null, int $page = null): array
     {
         try {
-            $params = ['query' => $query];
-            $response = $this->client->searchSubjects($params, $headers);
+            $params = ['query' => $query, 'page' => $page];
+            $response = $this->getProvider()->search($params);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $params, $response);
-        }
-
         return $response->getBody();
     }
 
     /**
-     * Get subject detail. Returns 200 or 404 if not found.
+     * Get subject detail. Returns stdClass with subject or Exception if not found.
      *
-     * @param int $id
-     * @param array|null $headers
-     * @return \stdClass|null
      * @throws Exception
-     * @api GET /api/v2/accounts/<slug>/subjects/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subject/detail-kontaktu
+     * @api GET /api/v3/accounts/{slug}/subjects/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#subject-detail
      */
-    public function getSubject($id, $headers = null)
+    public function getSubject(int $id): stdClass
     {
         try {
             $params = ['id' => $id];
-            $response = $this->client->getSubject($id, $headers);
+            $response = $this->getProvider()->get($id);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $params, $response);
-        }
-
         return $response->getBody();
     }
 
     /**
-     * Create new subject. Returns 201 when created, 403 when limit reached or 422 on failure.
+     * Create new subject. Returns stdClass with subject when created or Exception with errors or when limit reached.
      *
-     * @param array $data
-     * @return \stdClass|null
      * @throws Exception
-     * @api POST /api/v2/accounts/<slug>/subjects.json
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subjects-collection/novy-kontakt
+     * @api POST /api/v3/accounts/{slug}/subjects.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#create-subject
      */
-    public function createSubject(array $data)
+    public function createSubject(array $data): stdClass
     {
         try {
-            $response = $this->client->createSubject($data);
+            $response = $this->getProvider()->create($data);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $data, $e);
             throw $e;
         }
 
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_CREATED) {
             $this->logError(__FUNCTION__, $data, $response);
@@ -125,25 +110,23 @@ class SubjectService extends BaseService
     }
 
     /**
-     * Update existing subject. Returns 200 when updated, 404 when not found or 422 on failure.
+     * Update existing subject. Returns stdClass with subject when updated or Exception when not found or on failure.
      *
-     * @param int $id
-     * @param array $data
-     * @return \stdClass|null
      * @throws Exception
-     * @api PATCH /api/v2/accounts/<slug>/subjects/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subject/uprava-kontaktu
+     * @api PATCH /api/v3/accounts/{slug}/subjects/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#update-subject
      */
-    public function updateSubject($id, $data)
+    public function updateSubject(int $id, array $data): stdClass
     {
         try {
-            $response = $this->client->updateSubject($id, $data);
+            $response = $this->getProvider()->update($id, $data);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $data, $e);
             throw $e;
         }
 
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_SUCCESS) {
             $this->logError(__FUNCTION__, $data, $response);
@@ -155,23 +138,22 @@ class SubjectService extends BaseService
     /**
      * Delete existing subject. Returns 204 when delete or 404 when not found.
      *
-     * @param int $id
-     * @return bool
      * @throws Exception
-     * @api DELETE /api/v2/accounts/<slug>/subjects/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/subjects/subject/smazani-kontaktu
+     * @api DELETE /api/v3/accounts/{slug}/subjects/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/subjects#delete-subject
      */
-    public function deleteSubject($id)
+    public function deleteSubject(int $id): bool
     {
         try {
             $params = ['id' => $id];
-            $response = $this->client->deleteSubject($id);
+            $response = $this->getProvider()->delete($id);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_NO_CONTENT) {
             $this->logError(__FUNCTION__, $params, $response);

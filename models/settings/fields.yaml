@@ -9,14 +9,13 @@ tabs:
             label: ID účtu
             required: true
             comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci Oprávnění k účtům ve sloupci Účet'
-        account_email:
+        api_client_id:
             tab: Přístup k účtu
-            label: E-mail účtu
+            label: Client ID
             required: true
-            type: email
-            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, nahoře pod názvem firmy'
-        api_key:
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API v3 přístupové údaje'
+        api_client_secret:
             tab: Přístup k účtu
-            label: API v2 klíč
+            label: Client Secret
             required: true
-            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API v2 klíč'
+            comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API v3 přístupové údaje'

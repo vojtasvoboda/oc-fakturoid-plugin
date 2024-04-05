@@ -1,11 +1,13 @@
 <?php namespace VojtaSvoboda\Fakturoid\Services;
 
-use Fakturoid\Client;
-use Fakturoid\Exception;
+use Exception;
+use Fakturoid\Exception\RequestException;
+use Fakturoid\FakturoidManager;
+use Fakturoid\Provider\Provider;
 use Fakturoid\Response;
 use VojtaSvoboda\Fakturoid\Models\Log;
 
-class BaseService
+abstract class BaseService
 {
     const HTTP_RESPONSE_SUCCESS = 200;
 
@@ -13,49 +15,47 @@ class BaseService
 
     const HTTP_RESPONSE_NO_CONTENT = 204;
 
-    /** @var Client $client */
-    protected $client;
+    protected FakturoidManager $client;
 
-    /** @var Log $log */
-    private $log;
+    private Log $log;
 
-    /**
-     * @param Client $client
-     * @param Log $log
-     */
-    public function __construct(Client $client, Log $log)
+    public function __construct(FakturoidManager $client, Log $log)
     {
         $this->client = $client;
         $this->log = $log;
     }
 
-    /**
-     * Log Fakturoid event.
-     *
-     * @param string $method
-     * @param Response $response
-     */
+    abstract public function getProvider(): Provider;
+
     protected function logError($method, $params, Response $response)
     {
+        $body = (string) $response->getBody();
+
         $this->log->create([
             'level' => 'error',
             'request_method' => $method,
             'request_params' => json_encode($params, JSON_UNESCAPED_UNICODE),
             'response_status_code' => $response->getStatusCode(),
             'response_headers' => json_encode($response->getHeaders(), JSON_UNESCAPED_UNICODE),
-            'response_body' => json_encode($response->getBody(), JSON_UNESCAPED_UNICODE),
+            'response_body' => json_encode($body, JSON_UNESCAPED_UNICODE),
         ]);
     }
 
     protected function logException($method, $params, Exception $e)
     {
+        $body = $e->getMessage();
+
+        if ($e instanceof RequestException) {
+            $body = (string) $e->getResponse()->getBody();
+        }
+
         $this->log->create([
             'level' => 'exception',
             'request_method' => $method,
             'request_params' => json_encode($params, JSON_UNESCAPED_UNICODE),
             'response_status_code' => $e->getCode(),
             'response_headers' => null,
-            'response_body' => json_encode($e->getMessage(), JSON_UNESCAPED_UNICODE),
+            'response_body' => json_encode($body, JSON_UNESCAPED_UNICODE),
         ]);
     }
 }

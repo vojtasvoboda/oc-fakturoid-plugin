@@ -15,7 +15,7 @@ class Settings extends Model
 
     public $rules = [
         'account_id' => 'required',
-        'account_email' => 'required|email',
-        'api_key' => 'required|size:40',
+        'api_client_id' => 'required|size:40',
+        'api_client_secret' => 'required|size:40',
     ];
 }

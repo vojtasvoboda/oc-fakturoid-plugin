@@ -1,65 +1,62 @@
 <?php namespace VojtaSvoboda\Fakturoid\Services;
 
-use Fakturoid\Exception;
+use stdClass;
+use Exception;
+use Fakturoid\Provider\InvoicesProvider;
 
 /**
  * Invoices management.
  *
- * @see https://fakturoid.docs.apiary.io/#reference/invoices/uprava-kontaktu
+ * @see https://www.fakturoid.cz/api/v3/invoices
  * @package VojtaSvoboda\Fakturoid\Services
  */
 class InvoiceService extends BaseService
 {
+    public function getProvider(): InvoicesProvider
+    {
+        return $this->client->getInvoicesProvider();
+    }
+
     /**
-     * Get invoice detail. Returns 200 or 404 if not found.
+     * Get invoice detail. Returns stdClass with invoice or Exception if not found.
      *
-     * @param int $id
-     * @param array|null $headers
-     * @return \stdClass|null
      * @throws Exception
-     * @api GET /api/v2/accounts/<slug>/invoices/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice/detail-faktury
+     * @api GET /api/v3/accounts/{slug}/invoices/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#invoice-detail
      */
-    public function getInvoice($id, $headers = null)
+    public function getInvoice(int $id): stdClass
     {
         try {
             $params = ['id' => $id];
-            $response = $this->client->getInvoice($id, $headers);
+            $response = $this->getProvider()->get($id);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $params, $response);
-        }
-
         return $response->getBody();
     }
 
     /**
-     * Get invoice detail PDF. Returns 200 or 404 if not found.
+     * Get invoice detail PDF. Returns base64 encoded PDF or Exception if not found.
      *
-     * @param int $id
-     * @param array|null $headers
-     * @return string|null
      * @throws Exception
-     * @api GET /api/v2/accounts/<slug>/invoices/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice-pdf/stazeni-faktury-v-pdf
+     * @api GET /api/v3/accounts/{slug}/invoices/{id}/download.pdf
+     * @see https://www.fakturoid.cz/api/v3/invoices#download-invoice-pdf
      */
-    public function getInvoicePdf($id, $headers = null)
+    public function getInvoicePdf(int $id): string
     {
         try {
             $params = ['id' => $id];
-            $response = $this->client->getInvoicePdf($id, $headers);
+            $response = $this->getProvider()->getPdf($id);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
+        // could return HTTP 204 when PDF is not ready yet
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_SUCCESS) {
             $this->logError(__FUNCTION__, $params, $response);
@@ -69,58 +66,46 @@ class InvoiceService extends BaseService
     }
 
     /**
-     * Fulltext invoices search. Returns only 200.
+     * Fulltext invoices search. Returns array with invoices.
      *
-     * @param string|null $query
-     * @param int|null $page
-     * @param array|null $headers
-     * @return array|null
+     * Following fields are being searched: number, variable_symbol, client_name, note, private_note, footer_note and lines.
+     *
      * @throws Exception
-     * @api GET /api/v2/accounts/slug/invoices/search.json?query=
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoices-collection-fulltext-search/fulltextove-vyhledavani-ve-fakturach
+     * @api GET /api/v3/accounts/{slug}/invoices/search.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#fulltext-search
      */
-    public function searchInvoices($query = null, $page = null, $headers = null)
+    public function searchInvoices(string $query = null, int $page = null, array $tags = null): array
     {
-        $params = [
-            'query' => $query,
-            'page' => $page,
-        ];
-
         try {
-            $response = $this->client->searchInvoices($params, $headers);
+            $params = ['query' => $query, 'page' => $page, 'tags' => $tags];
+            $response = $this->getProvider()->search($params);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $params, $response);
-        }
-
         return $response->getBody();
     }
 
     /**
-     * Create new invoice. Returns 201 when created, 403 when limit reached or 422 on failure.
+     * Create new invoice. Returns stdClass with invoice or Exception when limit reached or on failure.
      *
-     * @param array $data
-     * @return \stdClass|null
      * @throws Exception
-     * @api POST /api/v2/accounts/<slug>/invoices.json
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoices-collection/nova-faktura
+     * @api POST /api/v3/accounts/{slug}/invoices.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#create-invoice
      */
-    public function createInvoice(array $data)
+    public function createInvoice(array $data): stdClass
     {
         try {
-            $response = $this->client->createInvoice($data);
+            $response = $this->getProvider()->create($data);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $data, $e);
             throw $e;
         }
 
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_CREATED) {
             $this->logError(__FUNCTION__, $data, $response);
@@ -130,25 +115,23 @@ class InvoiceService extends BaseService
     }
 
     /**
-     * Update existing invoice. Returns 200 when updated, 404 when not found or 422 on failure.
+     * Update existing invoice. Returns stdClass with updated invoice or Exception when not found or on failure.
      *
-     * @param int $id
-     * @param array $data
-     * @return \stdClass|null
      * @throws Exception
-     * @api PATCH /api/v2/accounts/<slug>/invoices/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice/uprava-faktury
+     * @api PATCH /api/v3/accounts/{slug}/invoices/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#update-invoice
      */
-    public function updateInvoice($id, $data)
+    public function updateInvoice(int $id, array $data): stdClass
     {
         try {
-            $response = $this->client->updateInvoice($id, $data);
+            $response = $this->getProvider()->update($id, $data);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $data, $e);
             throw $e;
         }
 
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_SUCCESS) {
             $this->logError(__FUNCTION__, $data, $response);
@@ -158,61 +141,47 @@ class InvoiceService extends BaseService
     }
 
     /**
-     * Update existing invoice. Returns 200 when updated, 404 when not found or 422 on failure.
+     * Update existing invoice. Returns true when fired or Exception when not found or on failure.
      *
-     * Available parameters: paid_at', paid_amount, variable_symbol, bank_account_id.
-     * Available events: mark_as_sent, deliver, pay, pay_proforma, pay_partial_proforma, remove_payment,
-     *      deliver_reminder, cancel, undo_cancel, lock, unlock.
+     * Available events: mark_as_sent, cancel, undo_cancel, lock, unlock, mark_as_uncollectible, undo_uncollectible.
      *
-     * @param int $id
-     * @param string $event
-     * @param array $params
-     * @return \stdClass|null
      * @throws Exception
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice-actions/akce-nad-fakturou
-     * @api PATCH /api/v2/accounts/<slug>/invoices/<id>/fire.json?event=
+     * @api PATCH /api/v3/accounts/{slug}/invoices/{id}/fire.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#invoice-actions
      */
-    public function fireInvoice($id, $event, $params = [])
-    {
-        $data = $params;
-        $data['event'] = $event;
-
-        try {
-            $response = $this->client->fireInvoice($id, $event, $params);
-
-        } catch (Exception $e) {
-            $this->logException(__FUNCTION__, $data, $e);
-            throw $e;
-        }
-
-        $status = $response->getStatusCode();
-        if ($status !== self::HTTP_RESPONSE_SUCCESS) {
-            $this->logError(__FUNCTION__, $data, $response);
-        }
-
-        return $response->getBody();
-    }
-
-    /**
-     * Delete existing invoice. Returns 204 when delete or 404 when not found.
-     *
-     * @param int $id
-     * @return bool
-     * @throws Exception
-     * @api DELETE /api/v2/accounts/<slug>/invoices/<id>.json
-     * @see https://fakturoid.docs.apiary.io/#reference/invoices/invoice/smazani-faktury
-     */
-    public function deleteInvoice($id)
+    public function fireInvoice(int $id, string $event): bool
     {
         try {
-            $params = ['id' => $id];
-            $response = $this->client->deleteInvoice($id);
+            $params = ['id' => $id, 'event' => $event];
+            $this->getProvider()->fireAction($id, $event);
 
         } catch (Exception $e) {
             $this->logException(__FUNCTION__, $params, $e);
             throw $e;
         }
 
+        return true;
+    }
+
+    /**
+     * Delete existing invoice. Returns true when deleted or Exception when not found.
+     *
+     * @throws Exception
+     * @api DELETE /api/v3/accounts/{slug}/invoices/{id}.json
+     * @see https://www.fakturoid.cz/api/v3/invoices#delete-invoice
+     */
+    public function deleteInvoice(int $id): bool
+    {
+        try {
+            $params = ['id' => $id];
+            $response = $this->getProvider()->delete($id);
+
+        } catch (Exception $e) {
+            $this->logException(__FUNCTION__, $params, $e);
+            throw $e;
+        }
+
+        // double check return code
         $status = $response->getStatusCode();
         if ($status !== self::HTTP_RESPONSE_NO_CONTENT) {
             $this->logError(__FUNCTION__, $params, $response);

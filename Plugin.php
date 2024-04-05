@@ -1,8 +1,9 @@
 <?php namespace VojtaSvoboda\Fakturoid;
 
 use Backend;
-use Config;
-use Fakturoid\Client;
+use Fakturoid\FakturoidManager;
+use GuzzleHttp\HandlerStack;
+use Illuminate\Support\Facades\Http;
 use System\Classes\PluginBase;
 use VojtaSvoboda\Fakturoid\Models\Settings;
 
@@ -74,24 +75,33 @@ class Plugin extends PluginBase
     }
 
     /**
-     * Prepare service provider for Fakturoid Client.
+     * Prepare service provider for Fakturoid Manager.
      */
     public function register()
     {
-        // bind Fakturoid Client to the application
-        $this->app->bind(Client::class, function ($app) {
+        $this->app->bind(FakturoidManager::class, function ($app) {
             $account_id = Settings::get('account_id');
-            $account_email = Settings::get('account_email');
-            $api_key = Settings::get('api_key');
+            $api_client_id = Settings::get('api_client_id');
+            $api_client_secret = Settings::get('api_client_secret');
 
-            // resolve application identifier
-            $app_ident = Config::get('vojtasvoboda.fakturoid::config.user_agent.name');
-            $include_email = Config::get('vojtasvoboda.fakturoid::config.user_agent.include_email', true);
-            if ($include_email === true) {
-                $app_ident = sprintf('%s (%s)', $app_ident, $account_email);
-            }
+            // prepare PSR-18 client
+            $stack = HandlerStack::create();
+            $http = Http::createClient($stack);
+            $userAgent = 'Fakturoid plugin for OctoberCMS <vojtasvoboda.cz@gmail.com>';
 
-            return new Client($account_id, $account_email, $api_key, $app_ident);
+            // create Fakturoid manager
+            $manager = new FakturoidManager(
+                $http,
+                $api_client_id,
+                $api_client_secret,
+                $userAgent,
+                $account_id
+            );
+
+            // login using OAuth2 Client Credentials Flow
+            $manager->authClientCredentials();
+
+            return $manager;
         });
     }
 }
