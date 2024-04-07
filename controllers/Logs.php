@@ -8,9 +8,6 @@ use Backend\Classes\Controller;
  */
 class Logs extends Controller
 {
-    /**
-     * @var array Behaviors that are implemented by this controller.
-     */
     public $implement = [
         'Backend.Behaviors.ListController',
     ];
@@ -19,6 +16,11 @@ class Logs extends Controller
      * @var string Configuration file for the `ListController` behavior.
      */
     public $listConfig = 'config_list.yaml';
+
+    /**
+     * @var array required permissions
+     */
+    public $requiredPermissions = ['vojtasvoboda.fakturoid.logs'];
 
     public function __construct()
     {

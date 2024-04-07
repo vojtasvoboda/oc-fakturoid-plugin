@@ -5,3 +5,6 @@
 1.0.2: Update plugin settings using tabs to better extending
 2.0.0:
     - "!!! Complete new version of plugin, requires new API credentials and using Fakturoid API v3"
+2.0.1:
+    - Receiving webhooks from Fakturoid
+    - create_webhook_logs_table.php

@@ -49,7 +49,39 @@ $fakturoid = app('VojtaSvoboda\Fakturoid\Services\SubjectService');
 $subjects = $fakturoid->getSubjects();
 ```
 
-**Feel free to send pull request!**
+## Webhooks
+
+For using webhooks:
+
+a) Fill random hash in CMS > Settings > Fakturoid > Webhook, see [Random string generator](https://gen.7ka.cz/).
+b) Go to the Fakturoid > Nastavení > Napojení na jiné aplikace > Webhooky page and insert webhook URL: _https://yourdomain.com/fakturoid/webhook?token=<random>_.
+c) You can enable saving webhooks to the log in CMS > Settings > Fakturoid > Webhook.
+
+Example of handling webhook in your plugin:
+
+```php
+public function boot()
+{
+    Event::listen('vojtasvoboda.fakturoid.webhookReceived', function ($data) {
+        // handle only paid events
+        if (str_starts_with($data['event_name'], 'invoice_paid') === false) {
+            return;
+        }
+
+        // get it from Fakturoid API to be sure it is paid
+        $invoice_id = $data['invoice_id'];
+        $invoiceService = app('VojtaSvoboda\Fakturoid\Services\InvoiceService');
+        $invoice = $this->invoiceService->getInvoice($invoice_id);
+
+        // if invoice is paid
+        if ($invoice->status == 'paid') {
+            // update status in my system
+        }
+    });
+}
+```
+
+Webhook data are: invoice_id, number, status, total, paid_at, event_name, invoice_custom_id.
 
 ## Documentation
 

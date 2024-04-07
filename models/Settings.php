@@ -17,5 +17,7 @@ class Settings extends Model
         'account_id' => 'required',
         'api_client_id' => 'required|size:40',
         'api_client_secret' => 'required|size:40',
+        'webhook_token' => 'max:64',
+        'webhook_log_enabled' => 'boolean',
     ];
 }

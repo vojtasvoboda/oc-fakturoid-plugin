@@ -19,3 +19,19 @@ tabs:
             label: Client Secret
             required: true
             comment: 'Najdete ve Fakturoidu > Nastavení > Uživatelský účet, v sekci API v3 přístupové údaje'
+        _webhook_info:
+            tab: Webhook
+            type: hint
+            path: ~/plugins/vojtasvoboda/fakturoid/controllers/settings/_webhook_info.htm
+            mode: info
+        webhook_token:
+            tab: Webhook
+            label: Token
+            required: false
+            comment: 'Token který umístíte na konec URL pro webhook a bude se ověřovat, např. /fakturoid/webhook?token=12345'
+        webhook_log_enabled:
+            tab: Webhook
+            label: Povolit ukládání webhooků do logu
+            type: switch
+            required: false
+            default: false

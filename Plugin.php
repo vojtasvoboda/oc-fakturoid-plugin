@@ -34,6 +34,13 @@ class Plugin extends PluginBase
                         'permissions' => ['vojtasvoboda.fakturoid.logs'],
                         'order' => 500,
                     ],
+                    'webhooklogs' => [
+                        'label' => 'Webhook log',
+                        'url' => Backend::url('vojtasvoboda/fakturoid/webhooklogs'),
+                        'icon' => 'icon-cloud-upload',
+                        'permissions' => ['vojtasvoboda.fakturoid.webhooklogs'],
+                        'order' => 510,
+                    ],
                 ],
             ],
         ];
@@ -50,6 +57,10 @@ class Plugin extends PluginBase
             'vojtasvoboda.fakturoid.logs' => [
                 'tab' => 'Fakturoid',
                 'label' => 'Fakturoid logs',
+            ],
+            'vojtasvoboda.fakturoid.webhooklogs' => [
+                'tab' => 'Fakturoid',
+                'label' => 'Fakturoid webhook logs',
             ],
         ];
     }
