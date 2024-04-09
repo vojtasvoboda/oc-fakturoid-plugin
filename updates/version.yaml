@@ -8,3 +8,4 @@
 2.0.1:
     - Receiving webhooks from Fakturoid
     - create_webhook_logs_table.php
+2.0.2: Fix class name

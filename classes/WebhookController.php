@@ -6,7 +6,7 @@ use VojtaSvoboda\Fakturoid\Models\Settings;
 
 class WebhookController extends Controller
 {
-    public function receive(WebHookReceiver $receiver): Response
+    public function receive(WebhookReceiver $receiver): Response
     {
         /** @var string $token Get token from settings */
         $token = Settings::get('webhook_token');

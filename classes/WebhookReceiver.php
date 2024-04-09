@@ -4,7 +4,7 @@ use Event;
 use VojtaSvoboda\Fakturoid\Models\Settings;
 use VojtaSvoboda\Fakturoid\Models\WebhookLog;
 
-class WebHookReceiver
+class WebhookReceiver
 {
     public function handle(array $data)
     {
