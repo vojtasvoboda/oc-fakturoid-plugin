@@ -9,3 +9,6 @@
     - Receiving webhooks from Fakturoid
     - create_webhook_logs_table.php
 2.0.2: Fix class name
+2.0.3:
+    - Fix receiving webhooks without paid date
+    - webhooks_make_date_nullable.php
