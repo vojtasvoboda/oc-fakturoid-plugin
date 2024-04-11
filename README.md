@@ -83,6 +83,31 @@ public function boot()
 
 Webhook data are: invoice_id, number, status, total, paid_at, event_name, invoice_custom_id.
 
+When you return false in the listener, webhook won't be saved to the log.
+
+```php
+Event::listen('vojtasvoboda.fakturoid.webhookReceived', function ($data) {
+    // e.g. we want to save only webhooks with invoice_paid event
+    if ($data['event_name'] !== 'invoice_paid') {
+        // when false is returned, webhook won't be saved to the log
+        return false;
+    }
+});
+
+```
+
+You can also modify webhook data before save them to the log:
+
+```php
+Event::listen('vojtasvoboda.fakturoid.webhookReceived', function ($data) {
+    $data['invoice_custom_id'] = 42;
+
+    // webhook will be saved with invoice_custom_id = 42
+    return $data;
+});
+
+```
+
 ## Documentation
 
 Fakturoid API v3 documentation: https://www.fakturoid.cz/api/v3

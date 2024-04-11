@@ -12,3 +12,4 @@
 2.0.3:
     - Fix receiving webhooks without paid date
     - webhooks_make_date_nullable.php
+2.0.4: Filtering webhooks before save to the log

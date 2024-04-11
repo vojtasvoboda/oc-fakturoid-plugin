@@ -8,10 +8,21 @@ class WebhookReceiver
 {
     public function handle(array $data)
     {
-        $this->logWebhook($data);
-
         /** @event vojtasvoboda.fakturoid.webhookReceived */
-        Event::fire('vojtasvoboda.fakturoid.webhookReceived', [$data]);
+        $response = Event::fire('vojtasvoboda.fakturoid.webhookReceived', [$data], true);
+
+        // do not save webhook data if response is false
+        if ($response === false) {
+            return;
+        }
+
+        // overriding webhook data if needed
+        if (is_array($response)) {
+            $data = $response;
+        }
+
+        // log webhook data
+        $this->logWebhook($data);
     }
 
     private function logWebhook(array $data)

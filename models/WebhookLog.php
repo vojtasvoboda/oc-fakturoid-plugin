@@ -45,4 +45,9 @@ class WebhookLog extends Model
     {
         $this->created_at = Argon::now();
     }
+
+    public function setPaidAtAttribute($value): void
+    {
+        $this->attributes['paid_at'] = !empty($value) ? $value : null;
+    }
 }
