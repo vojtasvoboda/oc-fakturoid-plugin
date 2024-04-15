@@ -16,7 +16,8 @@ columns:
         label: Number
         searchable: true
     status:
-        label: Status
+        # intentionally with space after title, to disallow translate
+        label: 'Status '
         searchable: true
     total:
         label: Total
@@ -29,6 +30,10 @@ columns:
     event_name:
         label: Event name
         searchable: true
+    description:
+        label: Result
+        searchable: true
+        default: '-'
     created_at:
         label: Created
         type: datetime
