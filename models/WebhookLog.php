@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Model;
 use October\Rain\Argon\Argon;
+use October\Rain\Database\Traits\Nullable as NullableTrait;
 use October\Rain\Database\Traits\Validation as ValidationTrait;
 
 /**
@@ -17,6 +18,8 @@ use October\Rain\Database\Traits\Validation as ValidationTrait;
  */
 class WebhookLog extends Model
 {
+    use NullableTrait;
+
     use ValidationTrait;
 
     /**
@@ -43,6 +46,9 @@ class WebhookLog extends Model
         'invoice_id', 'number', 'status', 'total', 'paid_at', 'event_name', 'invoice_custom_id',
         'description',
     ];
+
+    /** @var array $nullable Attribute names which should be set to null when empty */
+    protected $nullable = ['description', 'invoice_custom_id'];
 
     /**
      * @var array $dates Attributes to be cast to Argon (Carbon) instances

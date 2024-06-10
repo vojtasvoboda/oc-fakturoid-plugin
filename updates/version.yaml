@@ -16,3 +16,4 @@
 2.0.5:
     - Add optional description for webhooks
     - webhooks_add_description.php
+2.0.6: Fix saving nullable webhook log description
