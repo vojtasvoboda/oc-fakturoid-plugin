@@ -54,6 +54,10 @@ class Plugin extends PluginBase
     public function registerPermissions()
     {
         return [
+            'vojtasvoboda.fakturoid.settings' => [
+                'tab' => 'Fakturoid',
+                'label' => 'Fakturoid settings',
+            ],
             'vojtasvoboda.fakturoid.logs' => [
                 'tab' => 'Fakturoid',
                 'label' => 'Fakturoid logs',
@@ -79,8 +83,9 @@ class Plugin extends PluginBase
                 'description' => 'Fakturoid settings.',
                 'icon' => 'icon-cloud-upload',
                 'class' => Settings::class,
+                'permissions' => ['vojtasvoboda.fakturoid.settings'],
                 'order' => 500,
-                'keywords' => 'fakturoid'
+                'keywords' => 'fakturoid',
             ]
         ];
     }
