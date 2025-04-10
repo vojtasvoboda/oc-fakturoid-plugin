@@ -1,0 +1,11 @@
+scopes:
+    solved:
+        label: Solved
+        type: switch
+        default: 1
+        conditions:
+            - solved <> true
+            - solved = true
+    created_at:
+        label: Created
+        type: date

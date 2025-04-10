@@ -2,14 +2,15 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use VojtaSvoboda\Fakturoid\Models\Log;
 
 /**
- * Logs Back-end Controller
+ * @method listRefresh()
  */
 class Logs extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.ListController',
+        \Backend\Behaviors\ListController::class,
     ];
 
     /**
@@ -27,5 +28,34 @@ class Logs extends Controller
         parent::__construct();
 
         BackendMenu::setContext('VojtaSvoboda.Fakturoid', 'fakturoid', 'logs');
+    }
+
+    public function listInjectRowClass(Log $log, $definition = null)
+    {
+        // show solved items grayed out
+        if ($log->solved) {
+            return 'deleted';
+        }
+    }
+
+    public function onSetSolved()
+    {
+        $id = post('id');
+        $this->getModelInstance($id)?->setSolved();
+
+        return $this->listRefresh();
+    }
+
+    public function onUnsetSolved()
+    {
+        $id = post('id');
+        $this->getModelInstance($id)?->unsetSolved();
+
+        return $this->listRefresh();
+    }
+
+    protected function getModelInstance(?int $id = null): ?Log
+    {
+        return Log::find($id);
     }
 }

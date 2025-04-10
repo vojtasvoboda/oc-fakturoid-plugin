@@ -5,6 +5,7 @@ use Fakturoid\FakturoidManager;
 use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Facades\Http;
 use System\Classes\PluginBase;
+use VojtaSvoboda\Fakturoid\Models\Log;
 use VojtaSvoboda\Fakturoid\Models\Settings;
 
 /**
@@ -33,6 +34,7 @@ class Plugin extends PluginBase
                         'icon' => 'icon-cloud-upload',
                         'permissions' => ['vojtasvoboda.fakturoid.logs'],
                         'order' => 500,
+                        'counter' => (new Log())->getUnsolvedCount(),
                     ],
                     'webhooklogs' => [
                         'label' => 'Webhook log',

@@ -31,7 +31,7 @@ showSorting: true
 
 # Default sorting column
 defaultSort:
-    column: created_at
+    column: id
     direction: desc
 
 # Display checkboxes next to each record
@@ -45,3 +45,6 @@ toolbar:
     # Search widget configuration
     search:
         prompt: backend::lang.list.search_prompt
+
+# Filtering
+filter: config_filter.yaml
