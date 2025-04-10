@@ -2,6 +2,7 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use Redirect;
 use VojtaSvoboda\Fakturoid\Models\Log;
 
 /**
@@ -43,7 +44,7 @@ class Logs extends Controller
         $id = post('id');
         $this->getModelInstance($id)?->setSolved();
 
-        return $this->listRefresh();
+        return Redirect::back();
     }
 
     public function onUnsetSolved()
@@ -51,7 +52,7 @@ class Logs extends Controller
         $id = post('id');
         $this->getModelInstance($id)?->unsetSolved();
 
-        return $this->listRefresh();
+        return Redirect::back();
     }
 
     protected function getModelInstance(?int $id = null): ?Log
