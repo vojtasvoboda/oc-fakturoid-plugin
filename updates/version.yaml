@@ -21,3 +21,4 @@
 2.0.8:
     - Add logs flag for solved records
     - logs_add_solved_flag.php
+2.0.9: Fix refreshing list
