@@ -3,7 +3,6 @@
 use Cache;
 use Carbon\Carbon;
 use Model;
-use October\Rain\Argon\Argon;
 use October\Rain\Database\Builder;
 
 /**
@@ -39,7 +38,7 @@ class Log extends Model
     ];
 
     /**
-     * @var array $dates Attributes to be cast to Argon (Carbon) instances
+     * @var array $dates Attributes to be cast to Carbon instances
      */
     protected $dates = ['created_at'];
 
@@ -53,7 +52,7 @@ class Log extends Model
      */
     public function beforeCreate()
     {
-        $this->created_at = Argon::now();
+        $this->created_at = Carbon::now();
     }
 
     public function afterCreate()

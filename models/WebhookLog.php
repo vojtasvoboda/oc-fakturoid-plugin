@@ -2,7 +2,6 @@
 
 use Carbon\Carbon;
 use Model;
-use October\Rain\Argon\Argon;
 use October\Rain\Database\Traits\Nullable as NullableTrait;
 use October\Rain\Database\Traits\Validation as ValidationTrait;
 
@@ -51,7 +50,7 @@ class WebhookLog extends Model
     protected $nullable = ['description', 'invoice_custom_id'];
 
     /**
-     * @var array $dates Attributes to be cast to Argon (Carbon) instances
+     * @var array $dates Attributes to be cast to Carbon instances
      */
     protected $dates = ['paid_at', 'created_at'];
 
@@ -65,7 +64,7 @@ class WebhookLog extends Model
      */
     public function beforeCreate()
     {
-        $this->created_at = Argon::now();
+        $this->created_at = Carbon::now();
     }
 
     public function setPaidAtAttribute($value): void

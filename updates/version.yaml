@@ -22,3 +22,4 @@
     - Add logs flag for solved records
     - logs_add_solved_flag.php
 2.0.9: Fix refreshing list
+2.0.10: Fixes compatibility with October v4
