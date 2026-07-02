@@ -23,4 +23,5 @@
     - logs_add_solved_flag.php
 2.0.9: Fix refreshing list
 2.0.10: Fixes compatibility with October v4
-2.0.11: Fixes saving webhook description longer than 300 characters
+2.0.11: Allow Composer 2
+2.0.12: Fixes saving webhook description longer than 300 characters
