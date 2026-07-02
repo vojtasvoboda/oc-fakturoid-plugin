@@ -71,4 +71,9 @@ class WebhookLog extends Model
     {
         $this->attributes['paid_at'] = !empty($value) ? $value : null;
     }
+
+    public function setDescriptionAttribute($value): void
+    {
+        $this->attributes['description'] = $value !== null ? mb_substr($value, 0, 300) : null;
+    }
 }
